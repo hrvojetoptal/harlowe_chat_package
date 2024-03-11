@@ -73,9 +73,22 @@ class HarloweChat {
 
   Future<ConversationCredentials> joinConversation({
     required String conversationSid,
-    required String userId,
+    int? userId,
+    int? phiId,
+    String? firstName,
+    String? lastName,
+    String? email,
+    String? memberId,
   }) {
-    return _apiClient.joinConversation(conversationSid, userId);
+    return _apiClient.joinConversation(
+      conversationSid: conversationSid,
+      userId: userId,
+      phiId: phiId,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      memberId: memberId,
+    );
   }
 
   Future<ConversationCredentials> reJoinConversation({
