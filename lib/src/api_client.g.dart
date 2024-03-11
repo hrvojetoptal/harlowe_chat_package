@@ -185,7 +185,7 @@ class _PublicApiClient implements PublicApiClient {
   }
 
   @override
-  Future<dynamic> joinConversation(
+  Future<ConversationCredentials> joinConversation(
     String conversationSid,
     String userId,
   ) async {
@@ -193,28 +193,29 @@ class _PublicApiClient implements PublicApiClient {
     final queryParameters = <String, dynamic>{r'userId': userId};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _result = await _dio.fetch(_setStreamType<dynamic>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ConversationCredentials>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
     )
-        .compose(
-          _dio.options,
-          'conversation/joinconversation/${conversationSid}',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        ))));
-    final value = _result.data;
+            .compose(
+              _dio.options,
+              'conversation/joinconversation/${conversationSid}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = ConversationCredentials.fromJson(_result.data!);
     return value;
   }
 
   @override
-  Future<dynamic> reJoinConversation(
+  Future<ConversationCredentials> reJoinConversation(
     int conversationId,
     String existingIdentity,
   ) async {
@@ -222,23 +223,24 @@ class _PublicApiClient implements PublicApiClient {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _result = await _dio.fetch(_setStreamType<dynamic>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ConversationCredentials>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
     )
-        .compose(
-          _dio.options,
-          'conversation/${conversationId}/rejoin/${existingIdentity}',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        ))));
-    final value = _result.data;
+            .compose(
+              _dio.options,
+              'conversation/${conversationId}/rejoin/${existingIdentity}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = ConversationCredentials.fromJson(_result.data!);
     return value;
   }
 
