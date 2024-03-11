@@ -43,13 +43,13 @@ abstract class PublicApiClient {
   );
 
   @GET('conversation/joinconversation/{conversationSid}')
-  Future joinConversation(
+  Future<ConversationCredentials> joinConversation(
     @Path('conversationSid') String conversationSid,
     @Query('userId') String userId,
   );
 
   @GET('conversation/{conversationId}/rejoin/{existingIdentity}')
-  Future reJoinConversation(
+  Future<ConversationCredentials> reJoinConversation(
     @Path('conversationId') int conversationId,
     @Path('existingIdentity') String existingIdentity,
   );

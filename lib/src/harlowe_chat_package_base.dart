@@ -71,14 +71,14 @@ class HarloweChat {
     return await _apiClient.getConversationMessages(conversationSid);
   }
 
-  Future joinConversation({
+  Future<ConversationCredentials> joinConversation({
     required String conversationSid,
     required String userId,
   }) {
     return _apiClient.joinConversation(conversationSid, userId);
   }
 
-  Future reJoinConversation({
+  Future<ConversationCredentials> reJoinConversation({
     required int conversationId,
     required String existingIdentity,
   }) {
