@@ -53,7 +53,7 @@ class HarloweChat {
     return await _apiClient.getConversationsFromUserId(userId);
   }
 
-  Future sendMessage({
+  Future<bool> sendMessage({
     required int conversationId,
     required String participantSid,
     required String message,

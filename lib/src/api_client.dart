@@ -31,7 +31,7 @@ abstract class PublicApiClient {
   );
 
   @GET('conversation/sendmessage/{conversationId}/as/{participantSid}')
-  Future<List<ConversationSummary>> sendMessage({
+  Future<bool> sendMessage({
     @Path('conversationId') required int conversationId,
     @Path('participantSid') required String participantSid,
     @Query('message') required String message,
