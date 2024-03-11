@@ -1,6 +1,7 @@
 // TODO: Put public facing types in this file.
 
 import 'package:dio/dio.dart';
+import 'package:flutter_loggy_dio/flutter_loggy_dio.dart';
 import 'package:harlowe_chat_package/src/modesl/conversation_message/conversation_message.dart';
 
 import 'api_client.dart';
@@ -15,9 +16,15 @@ class HarloweChat {
   });
 
   PublicApiClient get _apiClient => PublicApiClient(
-        Dio(
-          BaseOptions(baseUrl: baseUrl),
-        ),
+        Dio(BaseOptions(baseUrl: baseUrl))
+          ..interceptors.addAll(
+            [
+              LoggyDioInterceptor(
+                requestBody: true,
+                requestHeader: true,
+              ),
+            ],
+          ),
       );
 
   Future<ConversationCredentials> createConversation({
