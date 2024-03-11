@@ -120,7 +120,7 @@ class _PublicApiClient implements PublicApiClient {
   }
 
   @override
-  Future<List<ConversationSummary>> sendMessage({
+  Future<bool> sendMessage({
     required int conversationId,
     required String participantSid,
     required String message,
@@ -129,27 +129,23 @@ class _PublicApiClient implements PublicApiClient {
     final queryParameters = <String, dynamic>{r'message': message};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _result = await _dio
-        .fetch<List<dynamic>>(_setStreamType<List<ConversationSummary>>(Options(
+    final _result = await _dio.fetch<bool>(_setStreamType<bool>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
     )
-            .compose(
-              _dio.options,
-              'conversation/sendmessage/${conversationId}/as/${participantSid}',
-              queryParameters: queryParameters,
-              data: _data,
-            )
-            .copyWith(
-                baseUrl: _combineBaseUrls(
-              _dio.options.baseUrl,
-              baseUrl,
-            ))));
-    var value = _result.data!
-        .map((dynamic i) =>
-            ConversationSummary.fromJson(i as Map<String, dynamic>))
-        .toList();
+        .compose(
+          _dio.options,
+          'conversation/sendmessage/${conversationId}/as/${participantSid}',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        ))));
+    final value = _result.data!;
     return value;
   }
 
@@ -185,12 +181,25 @@ class _PublicApiClient implements PublicApiClient {
   }
 
   @override
-  Future<ConversationCredentials> joinConversation(
-    String conversationSid,
-    String userId,
-  ) async {
+  Future<ConversationCredentials> joinConversation({
+    required String conversationSid,
+    int? userId,
+    int? phiId,
+    String? firstName,
+    String? lastName,
+    String? email,
+    String? memberId,
+  }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'userId': userId};
+    final queryParameters = <String, dynamic>{
+      r'userId': userId,
+      r'userId': phiId,
+      r'userId': firstName,
+      r'userId': lastName,
+      r'userId': email,
+      r'userId': memberId,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _result = await _dio.fetch<Map<String, dynamic>>(
