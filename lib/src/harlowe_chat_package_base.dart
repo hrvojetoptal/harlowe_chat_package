@@ -43,8 +43,14 @@ class HarloweChat {
     );
   }
 
-  Future<List<ConversationSummary>> getConversation(int phiId) async {
+  Future<List<ConversationSummary>> getConversationsFromPhiId(int phiId) async {
     return await _apiClient.getConversationsFromPhiId(phiId);
+  }
+
+  Future<List<ConversationSummary>> getConversationsFromUserId(
+    int userId,
+  ) async {
+    return await _apiClient.getConversationsFromUserId(userId);
   }
 
   Future sendMessage({
