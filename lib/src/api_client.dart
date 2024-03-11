@@ -25,6 +25,11 @@ abstract class PublicApiClient {
     @Path('phiId') int phiId,
   );
 
+  @GET('conversations/user/{userId}')
+  Future<List<ConversationSummary>> getConversationsFromUserId(
+    @Path('userId') int userId,
+  );
+
   @GET('conversation/sendmessage/{conversationId}/as/{participantSid}')
   Future<List<ConversationSummary>> sendMessage({
     @Path('conversationId') required int conversationId,
