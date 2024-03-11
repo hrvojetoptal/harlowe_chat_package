@@ -1,6 +1,74 @@
 // TODO: Put public facing types in this file.
 
-/// Checks if you are awesome. Spoiler: you are.
-class Awesome {
-  bool get isAwesome => true;
+import 'package:dio/dio.dart';
+import 'package:harlowe_chat_package/src/modesl/conversation_message/conversation_message.dart';
+
+import 'api_client.dart';
+import 'modesl/conversation_credentials/conversation_credentials.dart';
+import 'modesl/conversation_summary/conversation_summary.dart';
+
+class HarloweChat {
+  final String baseUrl;
+
+  HarloweChat({
+    required this.baseUrl,
+  });
+
+  PublicApiClient get _apiClient => PublicApiClient(
+        Dio(
+          BaseOptions(baseUrl: baseUrl),
+        ),
+      );
+
+  Future<ConversationCredentials> createConversation({
+    required String firstName,
+    required String lastName,
+    String? email,
+    required String memberId,
+    required int programId,
+  }) async {
+    return await _apiClient.createConversation(
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      memberId: memberId,
+      programId: programId,
+    );
+  }
+
+  Future<List<ConversationSummary>> getConversation(int phiId) async {
+    return await _apiClient.getConversationsFromPhiId(phiId);
+  }
+
+  Future sendMessage({
+    required int conversationId,
+    required String participantSid,
+    required String message,
+  }) async {
+    return await _apiClient.sendMessage(
+      message: message,
+      conversationId: conversationId,
+      participantSid: participantSid,
+    );
+  }
+
+  Future<List<ConversationMessage>> getConversationMessages(
+    String conversationSid,
+  ) async {
+    return await _apiClient.getConversationMessages(conversationSid);
+  }
+
+  Future joinConversation({
+    required String conversationSid,
+    required String userId,
+  }) {
+    return _apiClient.joinConversation(conversationSid, userId);
+  }
+
+  Future reJoinConversation({
+    required int conversationId,
+    required String existingIdentity,
+  }) {
+    return _apiClient.reJoinConversation(conversationId, existingIdentity);
+  }
 }
