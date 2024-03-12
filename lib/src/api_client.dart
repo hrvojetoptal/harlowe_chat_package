@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:harlowe_chat_package/src/modesl/task/task_resource.dart';
 import 'package:retrofit/retrofit.dart';
 
 import 'modesl/conversation_credentials/conversation_credentials.dart';
@@ -57,5 +58,10 @@ abstract class PublicApiClient {
   Future<ConversationCredentials> reJoinConversation(
     @Path('conversationId') int conversationId,
     @Path('existingIdentity') String existingIdentity,
+  );
+
+  @GET('task/wrapuptask/{taskSid}')
+  Future<TaskResource> wrapUpTask(
+    @Path('taskSid') String taskSid,
   );
 }

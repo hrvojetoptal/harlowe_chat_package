@@ -1,12 +1,8 @@
-// TODO: Put public facing types in this file.
-
 import 'package:dio/dio.dart';
 import 'package:flutter_loggy_dio/flutter_loggy_dio.dart';
-import 'package:harlowe_chat_package/src/modesl/conversation_message/conversation_message.dart';
 
+import '../harlowe_chat_package.dart';
 import 'api_client.dart';
-import 'modesl/conversation_credentials/conversation_credentials.dart';
-import 'modesl/conversation_summary/conversation_summary.dart';
 
 class HarloweChat {
   final String baseUrl;
@@ -96,5 +92,9 @@ class HarloweChat {
     required String existingIdentity,
   }) {
     return _apiClient.reJoinConversation(conversationId, existingIdentity);
+  }
+
+  Future<TaskResource> wrapUpTask(String taskSid) {
+    return _apiClient.wrapUpTask(taskSid);
   }
 }
