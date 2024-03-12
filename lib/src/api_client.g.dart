@@ -254,7 +254,10 @@ class _PublicApiClient implements PublicApiClient {
   }
 
   @override
-  Future<TaskResource> wrapUpTask(String taskSid) async {
+  Future<TaskResource> wrapUpTask(
+    String taskSid,
+    String conversationSid,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -267,7 +270,7 @@ class _PublicApiClient implements PublicApiClient {
     )
             .compose(
               _dio.options,
-              'task/wrapuptask/${taskSid}',
+              'task/wrapuptask/${taskSid}/${conversationSid}',
               queryParameters: queryParameters,
               data: _data,
             )

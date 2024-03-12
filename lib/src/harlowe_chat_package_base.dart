@@ -94,7 +94,10 @@ class HarloweChat {
     return _apiClient.reJoinConversation(conversationId, existingIdentity);
   }
 
-  Future<TaskResource> wrapUpTask(String taskSid) {
-    return _apiClient.wrapUpTask(taskSid);
+  Future<TaskResource> wrapUpTask({
+    required String taskSid,
+    required String conversationSid,
+  }) {
+    return _apiClient.wrapUpTask(taskSid, conversationSid);
   }
 }

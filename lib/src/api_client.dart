@@ -60,8 +60,9 @@ abstract class PublicApiClient {
     @Path('existingIdentity') String existingIdentity,
   );
 
-  @GET('task/wrapuptask/{taskSid}')
+  @GET('task/wrapuptask/{taskSid}/{conversationSid}')
   Future<TaskResource> wrapUpTask(
     @Path('taskSid') String taskSid,
+    @Path('conversationSid') String conversationSid,
   );
 }
