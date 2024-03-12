@@ -5,6 +5,7 @@ part 'task_resource.g.dart';
 
 @freezed
 class TaskResource with _$TaskResource {
+  // ignore: invalid_annotation_target
   @JsonSerializable(fieldRename: FieldRename.snake)
   const factory TaskResource({
     String? accountSid,

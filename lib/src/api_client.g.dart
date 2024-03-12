@@ -193,11 +193,11 @@ class _PublicApiClient implements PublicApiClient {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'userId': userId,
-      r'userId': phiId,
-      r'userId': firstName,
-      r'userId': lastName,
-      r'userId': email,
-      r'userId': memberId,
+      r'phiId': phiId,
+      r'firstName': firstName,
+      r'lastName': lastName,
+      r'email': email,
+      r'memberId': memberId,
     };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};

@@ -47,11 +47,11 @@ abstract class PublicApiClient {
   Future<ConversationCredentials> joinConversation({
     @Path('conversationSid') required String conversationSid,
     @Query('userId') int? userId,
-    @Query('userId') int? phiId,
-    @Query('userId') String? firstName,
-    @Query('userId') String? lastName,
-    @Query('userId') String? email,
-    @Query('userId') String? memberId,
+    @Query('phiId') int? phiId,
+    @Query('firstName') String? firstName,
+    @Query('lastName') String? lastName,
+    @Query('email') String? email,
+    @Query('memberId') String? memberId,
   });
 
   @GET('conversation/{conversationId}/rejoin/{existingIdentity}')
