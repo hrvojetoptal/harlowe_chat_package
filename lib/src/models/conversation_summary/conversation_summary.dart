@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:harlowe_chat_package/src/modesl/conversation_credentials/conversation_credentials.dart';
-import 'package:harlowe_chat_package/src/modesl/conversation_message/conversation_message.dart';
+import 'package:harlowe_chat_package/src/models/conversation_credentials/conversation_credentials.dart';
+import 'package:harlowe_chat_package/src/models/conversation_message/conversation_message.dart';
 
 part 'conversation_summary.freezed.dart';
 part 'conversation_summary.g.dart';

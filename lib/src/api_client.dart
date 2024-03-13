@@ -1,10 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:harlowe_chat_package/src/modesl/task/task_resource.dart';
+import 'package:harlowe_chat_package/src/models/task/task_resource.dart';
 import 'package:retrofit/retrofit.dart';
 
-import 'modesl/conversation_credentials/conversation_credentials.dart';
-import 'modesl/conversation_message/conversation_message.dart';
-import 'modesl/conversation_summary/conversation_summary.dart';
+import 'models/conversation_credentials/conversation_credentials.dart';
+import 'models/conversation_message/conversation_message.dart';
+import 'models/conversation_participant/conversation_participant.dart';
+import 'models/conversation_summary/conversation_summary.dart';
 
 part 'api_client.g.dart';
 
@@ -64,5 +65,16 @@ abstract class PublicApiClient {
   Future<TaskResource> wrapUpTask(
     @Path('taskSid') String taskSid,
     @Path('conversationSid') String conversationSid,
+  );
+
+  @GET('conversation/{conversationId}/participants')
+  Future<List<ConversationParticipant>> getParticipants(
+    @Path('conversationId') int conversationId,
+  );
+
+  @GET('conversation/{conversationId}/participants/{participantId}/photo')
+  Future getParticipantPhoto(
+    @Path('conversationId') int conversationId,
+    @Path('participantId') int participantId,
   );
 }
