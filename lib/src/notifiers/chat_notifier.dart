@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:harlowe_chat_package/harlowe_chat_package.dart';
 import 'package:harlowe_chat_package/src/dartz_extension.dart';
+import 'package:harlowe_chat_package/src/notifiers/local_storage.dart';
 
 class ChatNotifier extends StateNotifier<ChatNotifierState> {
   final HarloweChat _chat;
@@ -15,19 +16,19 @@ class ChatNotifier extends StateNotifier<ChatNotifierState> {
   final Function(String? currentToken) _checkAndUpdateAccessToken;
   final Function(String conversationSid) _subscribeToMessageUpdate;
   final Stream<TwilioMessage> _messageStream;
-
+  final LocalStorage _localStorage;
   StreamSubscription? _messageSubscription;
 
   ChatNotifier(
     this._chat,
     this._initSDK,
-    // this._localStorage,
     this._phiId,
     this._userId,
     this._conversationSid,
     this._checkAndUpdateAccessToken,
     this._subscribeToMessageUpdate,
     this._messageStream,
+    this._localStorage,
     Ref ref,
   ) : super(ChatNotifierState());
 
@@ -128,9 +129,8 @@ class ChatNotifier extends StateNotifier<ChatNotifierState> {
         for (final participant in participants) {
           final participantIdentity = participant.chatIdentity;
           if (participantIdentity != null) {
-            //TODO. implement
-            final cachedPhoto = null;
-            // await _localStorage.getUserPhoto(participantIdentity);
+            final cachedPhoto =
+                await _localStorage.getUserPhoto(participantIdentity);
             if (cachedPhoto != null) {
               print('User $participantIdentity has a photo cached.');
               _updateParticipantPhoto(participantIdentity, cachedPhoto);
@@ -144,7 +144,7 @@ class ChatNotifier extends StateNotifier<ChatNotifierState> {
                   print('User $participantIdentity does not have a photo.');
                 },
                 (image) {
-                  // _localStorage.storeProfilePhoto(participantIdentity, image);
+                  _localStorage.storeProfilePhoto(participantIdentity, image);
                   _updateParticipantPhoto(participantIdentity, image);
                 },
               );

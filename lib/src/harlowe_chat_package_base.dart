@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_loggy_dio/flutter_loggy_dio.dart';
+import 'package:hive/hive.dart';
 
 import '../harlowe_chat_package.dart';
 import 'api_client.dart';
@@ -12,10 +13,14 @@ import 'failure.dart';
 
 class HarloweChat {
   final String baseUrl;
+  final String? hivePath;
 
   HarloweChat({
     required this.baseUrl,
-  });
+    this.hivePath,
+  }) {
+    if (hivePath != null) Hive.init(hivePath);
+  }
 
   PublicApiClient get _apiClient => PublicApiClient(
         Dio(BaseOptions(baseUrl: baseUrl))
