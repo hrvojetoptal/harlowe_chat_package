@@ -11,17 +11,16 @@ abstract class LocalStorage {
 class LocalStorageImp implements LocalStorage {
   Box<Uint8List>? _hive;
 
-  LocalStorageImp() {
-    initHive();
-  }
+  LocalStorageImp();
 
-  initHive() async {
-    _hive = await Hive.openBox(_photoKey);
+  Future initHive() async {
+    if (_hive != null) _hive = await Hive.openBox(_photoKey);
   }
 
   @override
   Future storeProfilePhoto(String user, Uint8List image) async {
     try {
+      await initHive();
       await _hive?.put(user, image);
       print('STORE PHOTO FOR USER: $user');
     } catch (e) {
@@ -32,6 +31,7 @@ class LocalStorageImp implements LocalStorage {
   @override
   Future<Uint8List?> getUserPhoto(String user) async {
     try {
+      await initHive();
       final photo = _hive?.get(user);
       // if (photo != null) print('LOADED PHOTO FOR USER: $user');
       return photo;
