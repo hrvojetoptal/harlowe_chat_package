@@ -11,7 +11,7 @@ class ChatPage extends ConsumerStatefulWidget {
   final ChatNotifierState chatState;
   final Function(String text) sendMessage;
   final Function() loadConversationMessages;
-  final Function(String previous, String current) onMessageReceived;
+  final List<ConversationMessage> messages;
 
   // final Function(
   //   ProviderListenable<ChatNotifierState> provider,
@@ -23,9 +23,9 @@ class ChatPage extends ConsumerStatefulWidget {
   const ChatPage({
     super.key,
     required this.chatState,
-    required this.onMessageReceived,
     required this.sendMessage,
     required this.loadConversationMessages,
+    required this.messages,
     // required this.listen,
   });
 
@@ -36,7 +36,7 @@ class ChatPage extends ConsumerStatefulWidget {
 class _ChatPageState extends ConsumerState<ChatPage> {
   late InputTextFieldController _inputController;
 
-  List<types.Message> _messages = [];
+  // List<types.Message> _messages = [];
 
   void _handleSendPressed(types.PartialText message) {
     widget.sendMessage(message.text);
@@ -47,7 +47,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     if (message != null) {
       final textMessage = mapToMessage(message);
       setState(() {
-        _messages.insert(0, textMessage);
+        // _messages.insert(0, textMessage);
       });
     }
   }
@@ -59,10 +59,10 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       widget.loadConversationMessages();
     });
 
-    setState(() {
-      final state = widget.chatState;
-      _messages = mapToMessages(state.messages ?? []);
-    });
+    // setState(() {
+    //   final state = widget.chatState;
+    //   // _messages = mapToMessages(state.messages ?? []);
+    // });
     super.initState();
   }
 
@@ -82,7 +82,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     return Stack(
       children: [
         Chat(
-          messages: _messages,
+          messages: widget.messages.map(mapToMessage).toList(),
           onAttachmentPressed: null,
           onMessageTap: null,
           onPreviewDataFetched: null,
