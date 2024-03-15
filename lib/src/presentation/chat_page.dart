@@ -1,32 +1,23 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:harlowe_chat_package/harlowe_chat_package.dart';
 import 'package:harlowe_chat_package/src/presentation/app_reusable_container.dart';
+import 'package:harlowe_chat_package/src/presentation/user_avatar_widget.dart';
+
+import 'constants.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
   final ChatNotifierState chatState;
   final Function(String text) sendMessage;
   final Function() loadConversationMessages;
-  final List<ConversationMessage> messages;
-
-  // final Function(
-  //   ProviderListenable<ChatNotifierState> provider,
-  //   void Function(ChatNotifierState? previous, ChatNotifierState next)
-  //       listener, {
-  //   void Function(Object error, StackTrace stackTrace)? onError,
-  // }) listen;
 
   const ChatPage({
     super.key,
     required this.chatState,
     required this.sendMessage,
     required this.loadConversationMessages,
-    required this.messages,
-    // required this.listen,
   });
 
   @override
@@ -36,20 +27,9 @@ class ChatPage extends ConsumerStatefulWidget {
 class _ChatPageState extends ConsumerState<ChatPage> {
   late InputTextFieldController _inputController;
 
-  // List<types.Message> _messages = [];
-
   void _handleSendPressed(types.PartialText message) {
     widget.sendMessage(message.text);
     _inputController.clear();
-  }
-
-  _insertMessage(ConversationMessage? message) {
-    if (message != null) {
-      final textMessage = mapToMessage(message);
-      setState(() {
-        // _messages.insert(0, textMessage);
-      });
-    }
   }
 
   @override
@@ -58,11 +38,6 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     Future.microtask(() {
       widget.loadConversationMessages();
     });
-
-    // setState(() {
-    //   final state = widget.chatState;
-    //   // _messages = mapToMessages(state.messages ?? []);
-    // });
     super.initState();
   }
 
@@ -70,19 +45,13 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   Widget build(BuildContext context) {
     final currentUser =
         widget.chatState.conversation?.credentials.participantIdentity ?? '';
-    // widget.onMessageReceived();
-    // ref.listen<ChatState>(chatNotifier, (previous, next) {
-    //   if ((next.messages?.length ?? 0) > (previous?.messages?.length ?? 0)) {
-    //     _insertMessage(next.messages?.lastOrNull);
-    //   }
-    // });
     if (widget.chatState.loading) {
       return Center(child: CircularProgressIndicator());
     }
     return Stack(
       children: [
         Chat(
-          messages: widget.messages.map(mapToMessage).toList(),
+          messages: widget.chatState.messages?.map(mapToMessage).toList() ?? [],
           onAttachmentPressed: null,
           onMessageTap: null,
           onPreviewDataFetched: null,
@@ -97,7 +66,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
             sendButtonVisibilityMode: SendButtonVisibilityMode.always,
           ),
           avatarBuilder: (chatIdentity) {
-            return UserAvatar(
+            return UserAvatarWidget(
               chatIdentity: chatIdentity.toString(),
               participantImages: widget.chatState.participantImages,
             );
@@ -140,7 +109,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                   ),
                 ),
                 if (isCurrentUser && !nextMessageInGroup)
-                  UserAvatar(
+                  UserAvatarWidget(
                     chatIdentity: currentUser,
                     participantImages: widget.chatState.participantImages,
                   )
@@ -253,44 +222,3 @@ types.User mapToUser(ConversationCredentials? credentials) {
     lastName: credentials?.lastName ?? '',
   );
 }
-
-class UserAvatar extends ConsumerWidget {
-  final String chatIdentity;
-  final Map<String, Uint8List?>? participantImages;
-
-  UserAvatar({
-    super.key,
-    required this.chatIdentity,
-    required this.participantImages,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final imageBytes = participantImages?[chatIdentity];
-    if (imageBytes != null) {
-      return CircleAvatar(
-        radius: 18,
-        foregroundImage: MemoryImage(imageBytes),
-      );
-    }
-    return CircleAvatar(
-      radius: 18,
-      child: Text(chatIdentity[0].toUpperCase()),
-    );
-  }
-}
-
-const List<Color> activeColors = [
-  Color(0xFF3600F5),
-  Color(0xFFBA007F),
-];
-const BorderRadius softHarloweRadius = BorderRadius.only(
-  topRight: Radius.circular(0),
-  topLeft: Radius.circular(8),
-  bottomLeft: Radius.circular(8),
-  bottomRight: Radius.circular(8),
-);
-
-final double harloweLetterSpacing = 0.6;
-final Color greyText = Color(0xFF4B455E);
-final Color lightGreyText = Color(0xFFA5A2AE);

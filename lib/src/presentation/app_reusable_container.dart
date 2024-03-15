@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:harlowe_chat_package/src/presentation/chat_page.dart';
+
+import 'constants.dart';
 
 class AppReusableContainer extends ConsumerWidget {
   final Widget child;

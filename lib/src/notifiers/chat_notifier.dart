@@ -166,7 +166,7 @@ class ChatNotifier extends StateNotifier<ChatNotifierState> {
   addMessage(TwilioMessage twilioMessage) async {
     final message = _mapTwilioMessageToConversationMessage(twilioMessage);
     final messages = List<ConversationMessage>.from(state.messages ?? [])
-      ..add(message);
+      ..insert(0, message);
     state = state.copyWith(messages: messages);
   }
 
