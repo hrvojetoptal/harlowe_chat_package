@@ -16,8 +16,9 @@ class ChatNotifier extends StateNotifier<ChatNotifierState> {
   final Function(String? currentToken) _checkAndUpdateAccessToken;
   final Function(String conversationSid) _subscribeToMessageUpdate;
   final Stream<TwilioMessage> _messageStream;
-  final LocalStorage _localStorage;
   StreamSubscription? _messageSubscription;
+
+  final _localStorage = LocalStorageImp();
 
   ChatNotifier(
     this._chat,
@@ -28,7 +29,6 @@ class ChatNotifier extends StateNotifier<ChatNotifierState> {
     this._checkAndUpdateAccessToken,
     this._subscribeToMessageUpdate,
     this._messageStream,
-    this._localStorage,
     Ref ref,
   ) : super(ChatNotifierState());
 

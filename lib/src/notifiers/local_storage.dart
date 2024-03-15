@@ -1,13 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
-
-final localStorageProvider = Provider<LocalStorage>(
-  (_) => LocalStorageImp(
-    Hive.openBox(_photoKey),
-  ),
-);
 
 abstract class LocalStorage {
   Future storeProfilePhoto(String user, Uint8List image);
@@ -16,15 +9,20 @@ abstract class LocalStorage {
 }
 
 class LocalStorageImp implements LocalStorage {
-  final Future<Box<Uint8List>> _hiveFuture;
+  Box<Uint8List>? _hive;
 
-  LocalStorageImp(this._hiveFuture);
+  LocalStorageImp() {
+    initHive();
+  }
+
+  initHive() async {
+    _hive = await Hive.openBox(_photoKey);
+  }
 
   @override
   Future storeProfilePhoto(String user, Uint8List image) async {
     try {
-      final hive = await _hiveFuture;
-      await hive.put(user, image);
+      await _hive?.put(user, image);
       print('STORE PHOTO FOR USER: $user');
     } catch (e) {
       print('Error saving file to SharedPreferences: $e');
@@ -34,8 +32,7 @@ class LocalStorageImp implements LocalStorage {
   @override
   Future<Uint8List?> getUserPhoto(String user) async {
     try {
-      final hive = await _hiveFuture;
-      final photo = hive.get(user);
+      final photo = _hive?.get(user);
       // if (photo != null) print('LOADED PHOTO FOR USER: $user');
       return photo;
     } catch (e) {
