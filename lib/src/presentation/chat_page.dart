@@ -98,7 +98,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           ),
           avatarBuilder: (chatIdentity) {
             return UserAvatar(
-              chatIdentity: chatIdentity.id,
+              chatIdentity: chatIdentity.toString(),
               participantImages: widget.chatState.participantImages,
             );
           },
