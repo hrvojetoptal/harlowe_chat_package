@@ -1,8 +1,14 @@
+import 'dart:async';
+import 'dart:typed_data';
+
+import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_loggy_dio/flutter_loggy_dio.dart';
 
 import '../harlowe_chat_package.dart';
 import 'api_client.dart';
+import 'dartz_extension.dart';
+import 'failure.dart';
 
 class HarloweChat {
   final String baseUrl;
@@ -23,51 +29,99 @@ class HarloweChat {
           ),
       );
 
-  Future<ConversationCredentials> createConversation({
+  EitherFailureOr<ConversationCredentials> createConversation({
     required String firstName,
     required String lastName,
     String? email,
     required String memberId,
     required int programId,
   }) async {
-    return await _apiClient.createConversation(
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      memberId: memberId,
-      programId: programId,
-    );
+    try {
+      final response = await _apiClient.createConversation(
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        memberId: memberId,
+        programId: programId,
+      );
+      return Right(response);
+    } catch (error, stackTrace) {
+      return Left(Failure.generic(
+        title: 'Failed to create conversation',
+        stackTrace: stackTrace,
+        error: error,
+      ));
+    }
   }
 
-  Future<List<ConversationSummary>> getConversationsFromPhiId(int phiId) async {
-    return await _apiClient.getConversationsFromPhiId(phiId);
+  EitherFailureOr<List<ConversationSummary>> getConversationsFromPhiId(
+    int phiId,
+  ) async {
+    try {
+      final response = await _apiClient.getConversationsFromPhiId(phiId);
+      return Right(response);
+    } catch (error, stackTrace) {
+      return Left(Failure.generic(
+        title: 'Failed to get conversation',
+        stackTrace: stackTrace,
+        error: error,
+      ));
+    }
   }
 
-  Future<List<ConversationSummary>> getConversationsFromUserId(
+  EitherFailureOr<List<ConversationSummary>> getConversationsFromUserId(
     int userId,
   ) async {
-    return await _apiClient.getConversationsFromUserId(userId);
+    try {
+      final response = await _apiClient.getConversationsFromUserId(userId);
+      return Right(response);
+    } catch (error, stackTrace) {
+      return Left(Failure.generic(
+        title: 'Failed to get conversation',
+        stackTrace: stackTrace,
+        error: error,
+      ));
+    }
   }
 
-  Future<bool> sendMessage({
+  EitherFailureOr<bool> sendMessage({
     required int conversationId,
     required String participantSid,
     required String message,
   }) async {
-    return await _apiClient.sendMessage(
-      message: message,
-      conversationId: conversationId,
-      participantSid: participantSid,
-    );
+    try {
+      final response = await _apiClient.sendMessage(
+        message: message,
+        conversationId: conversationId,
+        participantSid: participantSid,
+      );
+      return Right(response);
+    } catch (error, stackTrace) {
+      return Left(Failure.generic(
+        title: 'Failed to send message',
+        stackTrace: stackTrace,
+        error: error,
+      ));
+    }
   }
 
-  Future<List<ConversationMessage>> getConversationMessages(
+  EitherFailureOr<List<ConversationMessage>> getConversationMessages(
     String conversationSid,
   ) async {
-    return await _apiClient.getConversationMessages(conversationSid);
+    try {
+      final response =
+          await _apiClient.getConversationMessages(conversationSid);
+      return Right(response);
+    } catch (error, stackTrace) {
+      return Left(Failure.generic(
+        title: 'Failed to get conversation messages',
+        stackTrace: stackTrace,
+        error: error,
+      ));
+    }
   }
 
-  Future<ConversationCredentials> joinConversation({
+  EitherFailureOr<ConversationCredentials> joinConversation({
     required String conversationSid,
     int? userId,
     int? phiId,
@@ -75,29 +129,112 @@ class HarloweChat {
     String? lastName,
     String? email,
     String? memberId,
-  }) {
-    return _apiClient.joinConversation(
-      conversationSid: conversationSid,
-      userId: userId,
-      phiId: phiId,
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      memberId: memberId,
-    );
+  }) async {
+    try {
+      final response = await _apiClient.joinConversation(
+        conversationSid: conversationSid,
+        userId: userId,
+        phiId: phiId,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        memberId: memberId,
+      );
+      return Right(response);
+    } catch (error, stackTrace) {
+      return Left(Failure.generic(
+        title: 'Failed to join conversation',
+        stackTrace: stackTrace,
+        error: error,
+      ));
+    }
   }
 
-  Future<ConversationCredentials> reJoinConversation({
+  EitherFailureOr<ConversationCredentials> reJoinConversation({
     required int conversationId,
     required String existingIdentity,
-  }) {
-    return _apiClient.reJoinConversation(conversationId, existingIdentity);
+  }) async {
+    try {
+      final response =
+          await _apiClient.reJoinConversation(conversationId, existingIdentity);
+      return Right(response);
+    } catch (error, stackTrace) {
+      return Left(Failure.generic(
+        title: 'Failed to rejoin conversation',
+        stackTrace: stackTrace,
+        error: error,
+      ));
+    }
   }
 
-  Future<TaskResource> wrapUpTask({
+  EitherFailureOr<TaskResource> wrapUpTask({
     required String taskSid,
     required String conversationSid,
-  }) {
-    return _apiClient.wrapUpTask(taskSid, conversationSid);
+  }) async {
+    try {
+      final response = await _apiClient.wrapUpTask(taskSid, conversationSid);
+      return Right(response);
+    } catch (error, stackTrace) {
+      return Left(Failure.generic(
+        title: 'Failed to wrap up task',
+        stackTrace: stackTrace,
+        error: error,
+      ));
+    }
+  }
+
+  EitherFailureOr<List<ConversationParticipant>> getParticipants(
+      int conversationId) async {
+    try {
+      final response = await _apiClient.getParticipants(conversationId);
+      return Right(response);
+    } catch (error, stackTrace) {
+      return Left(Failure.generic(
+        title: 'Failed to get participants',
+        stackTrace: stackTrace,
+        error: error,
+      ));
+    }
+  }
+
+  EitherFailureOr<Uint8List> getParticipantPhoto({
+    required int conversationId,
+    required int participantId,
+  }) async {
+    try {
+      final response = await _apiClient.getParticipantPhoto(
+        conversationId,
+        participantId,
+      );
+      final bytes = await _getBytesFromStream(response.data as ResponseBody);
+      return Right(bytes);
+    } catch (error, stackTrace) {
+      return Left(Failure.generic(
+        title: 'Error while getting photo',
+        stackTrace: stackTrace,
+      ));
+    }
+  }
+
+  Future<Uint8List> _getBytesFromStream(ResponseBody data) async {
+    Completer<Uint8List> completer = Completer();
+    List<int> bytes = [];
+
+    data.stream.listen(
+      (List<int> data) {
+        bytes.addAll(data);
+      },
+      onDone: () {
+        completer.complete(
+          Uint8List.fromList(bytes),
+        );
+      },
+      onError: (error, StackTrace stackTrace) {
+        print(error);
+        completer.completeError(error, stackTrace);
+      },
+    );
+
+    return await completer.future;
   }
 }

@@ -73,7 +73,8 @@ abstract class PublicApiClient {
   );
 
   @GET('conversation/{conversationId}/participants/{participantId}/photo')
-  Future getParticipantPhoto(
+  @DioResponseType(ResponseType.stream)
+  Future<HttpResponse> getParticipantPhoto(
     @Path('conversationId') int conversationId,
     @Path('participantId') int participantId,
   );

@@ -315,7 +315,7 @@ class _PublicApiClient implements PublicApiClient {
   }
 
   @override
-  Future<dynamic> getParticipantPhoto(
+  Future<HttpResponse<dynamic>> getParticipantPhoto(
     int conversationId,
     int participantId,
   ) async {
@@ -323,24 +323,27 @@ class _PublicApiClient implements PublicApiClient {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _result = await _dio.fetch(_setStreamType<dynamic>(Options(
+    final _result =
+        await _dio.fetch(_setStreamType<HttpResponse<dynamic>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
+      responseType: ResponseType.stream,
     )
-        .compose(
-          _dio.options,
-          'conversation/${conversationId}/participants/${participantId}/photo',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        ))));
+            .compose(
+              _dio.options,
+              'conversation/${conversationId}/participants/${participantId}/photo',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
     final value = _result.data;
-    return value;
+    final httpResponse = HttpResponse(value, _result);
+    return httpResponse;
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
