@@ -14,7 +14,7 @@ class LocalStorageImp implements LocalStorage {
   LocalStorageImp();
 
   Future initHive() async {
-    if (_hive != null) _hive = await Hive.openBox(_photoKey);
+    _hive ??= await Hive.openBox(_photoKey);
   }
 
   @override
