@@ -112,7 +112,7 @@ class ChatNotifier extends StateNotifier<ChatNotifierState> {
         conversationSid,
       );
       response.fold((l) => null, (messages) {
-        state = state.copyWith(messages: messages);
+        state = state.copyWith(messages: messages.reversed.toList());
       });
     }
   }
