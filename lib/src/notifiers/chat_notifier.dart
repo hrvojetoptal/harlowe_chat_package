@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
@@ -8,21 +7,17 @@ import 'package:harlowe_chat_package/harlowe_chat_package.dart';
 import 'package:harlowe_chat_package/src/dartz_extension.dart';
 import 'package:harlowe_chat_package/src/models/twilio_message/twilio_message.dart';
 
-import 'chat_state.dart';
-
 class ChatNotifier extends StateNotifier<ChatState> {
   final HarloweChat _chat;
   final int? _phiId;
   final int? _userId;
   final String? _conversationSid;
   final Function(String token, String conversationSid) _initSDK;
-  final Function(String token) _updateAccessToken;
   final Function(String? currentToken) _checkAndUpdateAccessToken;
   final Function(String conversationSid) _subscribeToMessageUpdate;
+  final Stream<TwilioMessage> _messageStream;
 
-  // final LocalStorage _localStorage;
-
-  StreamSubscription? _subscription;
+  StreamSubscription? _messageSubscription;
 
   ChatNotifier(
     this._chat,
@@ -31,9 +26,9 @@ class ChatNotifier extends StateNotifier<ChatState> {
     this._phiId,
     this._userId,
     this._conversationSid,
-    this._updateAccessToken,
     this._checkAndUpdateAccessToken,
     this._subscribeToMessageUpdate,
+    this._messageStream,
     Ref ref,
   ) : super(ChatState());
 
@@ -64,7 +59,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
             await _initSDK(token, sid);
             Future.delayed(
               Duration(seconds: 1),
-              () => _subscribeToMessageUpdate(sid),
+              () => subscribeToMessageUpdate(sid),
             );
           }
         }
@@ -183,21 +178,14 @@ class ChatNotifier extends StateNotifier<ChatState> {
       participantSid: conversation.credentials.participantSid ?? '',
     );
   }
-}
 
-StreamTransformer<Map, ConversationMessage> messagesTransformer =
-    StreamTransformer<Map, ConversationMessage>.fromHandlers(
-  handleData: (event, sink) {
-    final twilioMessage = _mapToMessage(event);
-
-    final message = _mapTwilioMessageToConversationMessage(twilioMessage);
-    sink.add(message);
-  },
-);
-
-TwilioMessage _mapToMessage(dynamic message) {
-  final json = jsonDecode(jsonEncode(message));
-  return TwilioMessage.fromJson(json);
+  subscribeToMessageUpdate(String conversationSid) {
+    _messageSubscription?.cancel();
+    _subscribeToMessageUpdate(conversationSid);
+    _messageSubscription = _messageStream.listen((message) {
+      addMessage(message);
+    });
+  }
 }
 
 ConversationMessage _mapTwilioMessageToConversationMessage(
