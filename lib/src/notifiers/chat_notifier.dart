@@ -5,7 +5,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:harlowe_chat_package/harlowe_chat_package.dart';
 import 'package:harlowe_chat_package/src/dartz_extension.dart';
-import 'package:harlowe_chat_package/src/models/twilio_message/twilio_message.dart';
 
 class ChatNotifier extends StateNotifier<ChatState> {
   final HarloweChat _chat;
@@ -54,7 +53,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
               conversation: firstConversation,
               messages: firstConversation.messageTail,
             );
-            loadConversationMessages(sid);
+            loadConversationMessages();
             loadConversationParticipants(firstConversation.conversationId);
             await _initSDK(token, sid);
             Future.delayed(
@@ -101,18 +100,21 @@ class ChatNotifier extends StateNotifier<ChatState> {
     final conversationSid = credentials?.conversationSid;
     if (token != null && conversationSid != null) {
       await _initSDK(token, conversationSid);
-      await loadConversationMessages(conversationSid);
+      await loadConversationMessages(existingSid: conversationSid);
       state = state.copyWith(loading: false);
     }
   }
 
-  loadConversationMessages(String conversationSid) async {
-    final response = await _chat.getConversationMessages(
-      conversationSid,
-    );
-    response.fold((l) => null, (messages) {
-      state = state.copyWith(messages: messages);
-    });
+  loadConversationMessages({String? existingSid}) async {
+    final conversationSid = state.conversation?.conversationSid;
+    if (conversationSid != null) {
+      final response = await _chat.getConversationMessages(
+        conversationSid,
+      );
+      response.fold((l) => null, (messages) {
+        state = state.copyWith(messages: messages);
+      });
+    }
   }
 
   loadConversationParticipants(int? conversationId) async {
