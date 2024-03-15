@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:harlowe_chat_package/harlowe_chat_package.dart';
 import 'package:harlowe_chat_package/src/dartz_extension.dart';
 
-class ChatNotifier extends StateNotifier<ChatState> {
+class ChatNotifier extends StateNotifier<ChatNotifierState> {
   final HarloweChat _chat;
   final int? _phiId;
   final int? _userId;
@@ -29,7 +29,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
     this._subscribeToMessageUpdate,
     this._messageStream,
     Ref ref,
-  ) : super(ChatState());
+  ) : super(ChatNotifierState());
 
   Future<void> init() async {
     if (_phiId != null) {
