@@ -12,3 +12,4 @@ export 'src/models/task/task_resource.dart';
 export 'src/models/twilio_message/twilio_message.dart';
 export 'src/notifiers/chat_notifier.dart';
 export 'src/notifiers/chat_notifier_state.dart';
+export 'src/presentation/chat_page.dart';
